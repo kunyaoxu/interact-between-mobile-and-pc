@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Socket.IO chat</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+        }
+
+        .row {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            height: calc(100% / 3);
+        }
+
+        .btn {
+            background-color: green;
+            color: white;
+            border: 0;
+            padding: 12px 12px;
+            width: 50%;
+            margin: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="row">
+        <input type="button" class="btn" value="up">
+    </div>
+    <div class="row">
+        <input type="button" class="btn" value="left">
+        <input type="button" class="btn" value="right">
+    </div>
+    <div class="row">
+        <input type="button" class="btn" value="down">
+    </div>
+
+
+    <!--  script  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        $(function() {
+            var socket = io();
+
+            var horizon_v = 0, vertical_v = 0;
+            
+            $('.btn').on("touchstart", function() {
+                switch($(this).val()){
+                    case "up":
+                        vertical_v += 1;
+                        break;
+                    case "down":
+                        vertical_v -= 1;
+                        break;
+                    case "left":
+                        horizon_v -= 1;
+                        break;
+                    case "right":
+                        horizon_v += 1;
+                        break;
+                    
+                }
+                socket.emit('control', {
+                    id: location.pathname.replace(/\//g,""),
+                    command: {horizon: horizon_v, vertical: vertical_v}
+                });
+            });
+            
+            $('.btn').on("touchend", function() {
+                //          socket.emit('control', $('#m').val());
+                switch($(this).val()){
+                    case "up":
+                        vertical_v -= 1;
+                        break;
+                    case "down":
+                        vertical_v += 1;
+                        break;
+                    case "left":
+                        horizon_v += 1;
+                        break;
+                    case "right":
+                        horizon_v -= 1;
+                        break;
+                    
+                }
+                socket.emit('control', {
+                    id: location.pathname.replace(/\//g,""),
+                    command: {horizon: horizon_v, vertical: vertical_v}
+                });
+            });
+            
+            socket.emit('mobileStart', {
+                id: location.pathname.replace(/\//g,"")
+            });
+            
+        });
+    </script>
+</body>
+
+</html>

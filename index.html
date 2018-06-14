@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Socket.IO chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        #block {
+            width: 80px;
+            height: 80px;
+            background-color: red;
+            position: absolute;
+/*            transform: translate(100px, 100px);*/
+        }
+        
+        #qrcode > label {
+            margin-bottom: 24px;
+            display: block;
+        }
+        
+        #qrcode {
+            padding: 24px;
+            
+        }
+    </style>
+</head>
+
+<body>
+    <div id="qrcode"><label>用手機掃描QR code，之後手機開啟連結，開啟的頁面裡的按鈕可以用來操作此QR code下方的紅色方塊，注意這個視窗不要刷新不然要重新掃描QR code</label></div>
+
+    <div id="block"></div>
+
+    <!--  script  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/js/qrcode.min.js"></script>
+    <script>
+        $(function() {
+            var x = 100, y = 100;
+            $("#block").css("transform", "translate(" + x + "px, " + y + "px)");
+            var socket = io();
+
+            var controlState = {horizon: 0, vertical: 0};
+
+            
+            socket.on('move', function(msg) {
+//                console.log(msg);
+                controlState = msg;
+            });
+
+            socket.on('start', function(msg) {
+                $('#qrcode').prop("hidden", true);
+            });
+
+            socket.emit('getControlID', true, function(id) {
+                console.log(id);
+                new QRCode(document.getElementById("qrcode"), location.origin + "/" + id);
+            });
+            var t = performance.now();
+            function render(){
+                requestAnimationFrame(render);
+                var diff_t = (performance.now() - t) / 1000;
+                t = performance.now();
+                x += controlState.horizon * 100 * diff_t;
+                y -= controlState.vertical * 100 * diff_t;
+                $("#block").css("transform", "translate(" + x + "px, " + y + "px)");
+            }
+            var raf = requestAnimationFrame(render);
+
+        });
+    </script>
+</body>
+
+</html>
