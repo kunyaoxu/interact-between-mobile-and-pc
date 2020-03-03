@@ -6,3 +6,7 @@
 2. 下載這個專案(git clone)
 3. 進到專案的資料夾中，並運行npm install指令安裝需要的套件
 4. 指令npm start即可運行這個專案(伺服器預設跑在8080 port上)
+
+#### Demo
+- https://obscure-temple-94922.herokuapp.com/
+- (已失效) http://interact-mobile-and-pc-interact-mobile-and-pc.7e14.starter-us-west-2.openshiftapps.com/
