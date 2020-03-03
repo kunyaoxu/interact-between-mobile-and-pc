@@ -3,8 +3,6 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 8080;
 
-
-
 app.get('/js/:filename', function (req, res) {
     res.sendFile(__dirname + '/js/' + req.params.filename);
     console.log("req.params.filename:", req.params.filename);
@@ -32,19 +30,12 @@ io.on('connection', function (socket) {
         if(io.sockets.connected[msg.id]){
             io.sockets.connected[msg.id].emit("move", msg.command);
         }
-
-        //console.log(io.sockets.connected);
     });
     
     socket.on('mobileStart', function (msg) {
         if(io.sockets.connected[msg.id]){
             io.sockets.connected[msg.id].emit("start", true);          
         }
-    });
-    
-    socket.on('getControlID', function(msg, callback) {
-        console.log(msg);
-        callback(socket.id);
     });
 });
 

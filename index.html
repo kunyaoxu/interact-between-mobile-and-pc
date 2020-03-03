@@ -46,12 +46,9 @@
             var x = 100, y = 100;
             $("#block").css("transform", "translate(" + x + "px, " + y + "px)");
             var socket = io();
-
             var controlState = {horizon: 0, vertical: 0};
 
-            
             socket.on('move', function(msg) {
-//                console.log(msg);
                 controlState = msg;
             });
 
@@ -59,10 +56,12 @@
                 $('#qrcode').prop("hidden", true);
             });
 
-            socket.emit('getControlID', true, function(id) {
-                console.log(id);
-                new QRCode(document.getElementById("qrcode"), location.origin + "/" + id);
+            socket.on('connect', () => {
+                console.log("id is", socket.id)
+                new QRCode(document.getElementById("qrcode"), location.origin + "/" + socket.id);
+                console.log("uri: ", location.origin + "/" + socket.id)
             });
+
             var t = performance.now();
             function render(){
                 requestAnimationFrame(render);
@@ -73,7 +72,6 @@
                 $("#block").css("transform", "translate(" + x + "px, " + y + "px)");
             }
             var raf = requestAnimationFrame(render);
-
         });
     </script>
 </body>
