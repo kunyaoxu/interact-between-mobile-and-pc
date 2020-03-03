@@ -102,6 +102,7 @@
                     id: location.pathname.replace(/\//g,""),
                     command: {horizon: horizon_v, vertical: vertical_v}
                 });
+                return false;
             });
             
             socket.emit('mobileStart', {
